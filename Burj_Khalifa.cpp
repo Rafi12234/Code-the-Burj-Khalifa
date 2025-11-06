@@ -61,7 +61,6 @@ static inline int left_from_center(int centerCol, int w)
     return centerCol - (w - 1) / 2;
 }
 
-// Helper for adding buildings
 void add_building(Canvas& cv, int baseRow, int center, int shaftW, int shaftH,
                   int stepW = 0, int stepH = 0, bool crown=true, bool antenna=false)
 {
@@ -115,7 +114,6 @@ void add_building(Canvas& cv, int baseRow, int center, int shaftW, int shaftH,
     }
 }
 
-// Building helper functions
 inline void build_tiny_box(Canvas& cv, int baseRow, int c) { add_building(cv, baseRow, c, 6, 8, 0,0, true,false); }
 inline void build_small_ribbed(Canvas& cv, int baseRow, int c) { add_building(cv, baseRow, c, 10, 14, 0,0, true,false); }
 inline void build_medium_crown(Canvas& cv, int baseRow, int c) { add_building(cv, baseRow, c, 12, 18, 0,0, true,false); }
@@ -186,10 +184,10 @@ int main()
     const int baseRow = H-4;
     const int centerCol = W/2;
 
-    // Ground line
+ 
     cv.hline(H-3,0,W-1,'_');
 
-    // ======= BURJ KHALIFA (Centered) =======
+  
     int widths[]  = {64,54,46,38,30,24,20,16,12,9,6,4};
     int heights[] = {10,10, 9, 9, 8, 7, 6, 6, 5, 4,4,4};
     const int nTiers = sizeof(widths)/sizeof(widths[0]);
@@ -213,16 +211,13 @@ int main()
     for(int r=rowTop-spireLen; r<=rowTop-1; r++) cv.vline(r,r,centerCol,'|');
     cv.set(rowTop-spireLen-1,centerCol,'^');
 
-    // Podium
+ 
     int podiumH=6, podiumW=80, podiumLeft=left_from_center(centerCol,podiumW);
     cv.rect(baseRow-podiumH,podiumLeft,podiumH,podiumW,'#',true);
     cv.rect(baseRow-8,podiumLeft-12,8,14,'#',true);
     cv.rect(baseRow-9,podiumLeft+podiumW-2,9,14,'#',true);
 
-    // ======= ULTRA-DENSE CITYSCAPE - FILLING ENTIRE HORIZON =======
-    // We'll create buildings across the entire width with minimal gaps
-
-    // Function pointers for variety
+    
     void (*building_functions[])(Canvas&, int, int) = {
         build_tiny_box, build_small_ribbed, build_medium_crown, build_medium_step_antenna,
         build_wide_block, build_wide_step, build_tall_slim, build_tall_ribbed,
@@ -234,23 +229,23 @@ int main()
 
     const int num_building_types = sizeof(building_functions) / sizeof(building_functions[0]);
 
-    // Create extremely dense cityscape - buildings everywhere!
-    int current_pos = 5;  // Start slightly in from left edge
 
-    // LEFT SIDE OF BURJ (columns 5-90)
+    int current_pos = 5;
+
+ 
     while(current_pos < 90) {
         int building_type = rand() % num_building_types;
         building_functions[building_type](cv, baseRow, current_pos);
 
-        // Vary the spacing to create natural density
-        int spacing = 8 + (rand() % 12);  // 8-19 pixels between buildings
+        
+        int spacing = 8 + (rand() % 12); 
         current_pos += spacing;
 
-        // Ensure we don't go into Burj's space
+        
         if(current_pos > 85) break;
     }
 
-    // RIGHT SIDE OF BURJ (columns 115-195)
+   
     current_pos = 115;
     while(current_pos < 195) {
         int building_type = rand() % num_building_types;
@@ -260,8 +255,7 @@ int main()
         current_pos += spacing;
     }
 
-    // FILL REMAINING GAPS with smaller buildings
-    // Far left edge fill
+ 
     build_low_rise(cv, baseRow, 2);
     build_small_ribbed(cv, baseRow, 8);
     build_medium_crown(cv, baseRow, 15);
@@ -273,17 +267,17 @@ int main()
     build_double_step(cv, baseRow, 70);
     build_campus(cv, baseRow, 80);
 
-    // Near left of Burj fill
+    
     build_glass_tower(cv, baseRow, 92);
     build_high_rise(cv, baseRow, 98);
     build_mid_rise(cv, baseRow, 104);
 
-    // Near right of Burj fill
+  
     build_mid_rise(cv, baseRow, 108);
     build_high_rise(cv, baseRow, 112);
     build_glass_tower(cv, baseRow, 118);
 
-    // Far right fill
+   
     build_campus(cv, baseRow, 125);
     build_double_step(cv, baseRow, 135);
     build_ziggurat3(cv, baseRow, 145);
@@ -295,12 +289,11 @@ int main()
     build_small_ribbed(cv, baseRow, 198);
     build_low_rise(cv, baseRow, 198);
 
-    // ======= ADDITIONAL DENSITY LAYERS =======
-    // Second row of buildings in front (shorter buildings)
+    
     int front_base = baseRow - 2;
     current_pos = 10;
     while(current_pos < 190) {
-        if(current_pos < 80 || current_pos > 120) { // Avoid Burj area
+        if(current_pos < 80 || current_pos > 120) { 
             int height_variation = rand() % 3;
             if(height_variation == 0) build_low_rise(cv, front_base, current_pos);
             else if(height_variation == 1) build_small_ribbed(cv, front_base, current_pos);
@@ -309,11 +302,10 @@ int main()
         current_pos += 12 + (rand() % 15);
     }
 
-    // Third row of very low buildings in very front
     int very_front_base = baseRow - 1;
     current_pos = 15;
     while(current_pos < 185) {
-        if(current_pos < 75 || current_pos > 125) { // Avoid Burj area
+        if(current_pos < 75 || current_pos > 125) { 
             build_low_rise(cv, very_front_base, current_pos);
         }
         current_pos += 8 + (rand() % 10);
@@ -322,3 +314,4 @@ int main()
     cv.print();
     return 0;
 }
+
